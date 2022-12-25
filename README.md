@@ -1,0 +1,1 @@
+# go-graphql-memo-app
