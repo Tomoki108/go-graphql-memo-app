@@ -11,14 +11,21 @@ import (
 	"github.com/Tomoki108/go-graphql-memo-app/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// CreateMemo is the resolver for the createMemo field.
+func (r *mutationResolver) CreateMemo(ctx context.Context, input model.NewMemo) (*model.Memo, error) {
+	memo := model.Memo{
+		Title: input.Title,
+		Body:  input.Body,
+		Label: nil,
+	}
+	r.DB.Create(&memo)
+
+	return &memo, nil
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// Labels is the resolver for the labels field.
+func (r *queryResolver) Labels(ctx context.Context) ([]*model.Label, error) {
+	panic(fmt.Errorf("not implemented: Labels - labels"))
 }
 
 // Mutation returns MutationResolver implementation.
