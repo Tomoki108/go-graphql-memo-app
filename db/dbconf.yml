@@ -1,0 +1,5 @@
+development:
+    driver: mymysql
+    open: tcp:localhost:3306*go_graphql_memo_app/root/pass
+
+
