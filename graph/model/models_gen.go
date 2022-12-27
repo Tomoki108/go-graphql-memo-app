@@ -2,16 +2,10 @@
 
 package model
 
-type Label struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
 type Memo struct {
 	ID    string `json:"id"`
 	Title string `json:"title"`
 	Body  string `json:"body"`
-	Label *Label `json:"label"`
 }
 
 type NewMemo struct {

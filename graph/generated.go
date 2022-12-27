@@ -45,15 +45,9 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
-	Label struct {
-		ID   func(childComplexity int) int
-		Name func(childComplexity int) int
-	}
-
 	Memo struct {
 		Body  func(childComplexity int) int
 		ID    func(childComplexity int) int
-		Label func(childComplexity int) int
 		Title func(childComplexity int) int
 	}
 
@@ -62,7 +56,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Labels func(childComplexity int) int
+		Memos func(childComplexity int) int
 	}
 }
 
@@ -70,7 +64,7 @@ type MutationResolver interface {
 	CreateMemo(ctx context.Context, input model.NewMemo) (*model.Memo, error)
 }
 type QueryResolver interface {
-	Labels(ctx context.Context) ([]*model.Label, error)
+	Memos(ctx context.Context) ([]*model.Memo, error)
 }
 
 type executableSchema struct {
@@ -88,20 +82,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Label.id":
-		if e.complexity.Label.ID == nil {
-			break
-		}
-
-		return e.complexity.Label.ID(childComplexity), true
-
-	case "Label.name":
-		if e.complexity.Label.Name == nil {
-			break
-		}
-
-		return e.complexity.Label.Name(childComplexity), true
-
 	case "Memo.body":
 		if e.complexity.Memo.Body == nil {
 			break
@@ -115,13 +95,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Memo.ID(childComplexity), true
-
-	case "Memo.label":
-		if e.complexity.Memo.Label == nil {
-			break
-		}
-
-		return e.complexity.Memo.Label(childComplexity), true
 
 	case "Memo.title":
 		if e.complexity.Memo.Title == nil {
@@ -142,12 +115,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateMemo(childComplexity, args["input"].(model.NewMemo)), true
 
-	case "Query.labels":
-		if e.complexity.Query.Labels == nil {
+	case "Query.memos":
+		if e.complexity.Query.Memos == nil {
 			break
 		}
 
-		return e.complexity.Query.Labels(childComplexity), true
+		return e.complexity.Query.Memos(childComplexity), true
 
 	}
 	return 0, false
@@ -305,94 +278,6 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Label_id(ctx context.Context, field graphql.CollectedField, obj *model.Label) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Label_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Label_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Label",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Label_name(ctx context.Context, field graphql.CollectedField, obj *model.Label) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Label_name(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Label_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Label",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Memo_id(ctx context.Context, field graphql.CollectedField, obj *model.Memo) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Memo_id(ctx, field)
 	if err != nil {
@@ -525,53 +410,6 @@ func (ec *executionContext) fieldContext_Memo_body(ctx context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _Memo_label(ctx context.Context, field graphql.CollectedField, obj *model.Memo) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Memo_label(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Label, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.Label)
-	fc.Result = res
-	return ec.marshalOLabel2ᚖgithubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐLabel(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Memo_label(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Memo",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Label_id(ctx, field)
-			case "name":
-				return ec.fieldContext_Label_name(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Label", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_createMemo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createMemo(ctx, field)
 	if err != nil {
@@ -617,8 +455,6 @@ func (ec *executionContext) fieldContext_Mutation_createMemo(ctx context.Context
 				return ec.fieldContext_Memo_title(ctx, field)
 			case "body":
 				return ec.fieldContext_Memo_body(ctx, field)
-			case "label":
-				return ec.fieldContext_Memo_label(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Memo", field.Name)
 		},
@@ -637,8 +473,8 @@ func (ec *executionContext) fieldContext_Mutation_createMemo(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_labels(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_labels(ctx, field)
+func (ec *executionContext) _Query_memos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_memos(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -651,7 +487,7 @@ func (ec *executionContext) _Query_labels(ctx context.Context, field graphql.Col
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Labels(rctx)
+		return ec.resolvers.Query().Memos(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -663,12 +499,12 @@ func (ec *executionContext) _Query_labels(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Label)
+	res := resTmp.([]*model.Memo)
 	fc.Result = res
-	return ec.marshalNLabel2ᚕᚖgithubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐLabelᚄ(ctx, field.Selections, res)
+	return ec.marshalNMemo2ᚕᚖgithubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐMemoᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_labels(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_memos(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -677,11 +513,13 @@ func (ec *executionContext) fieldContext_Query_labels(ctx context.Context, field
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Label_id(ctx, field)
-			case "name":
-				return ec.fieldContext_Label_name(ctx, field)
+				return ec.fieldContext_Memo_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Memo_title(ctx, field)
+			case "body":
+				return ec.fieldContext_Memo_body(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Label", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Memo", field.Name)
 		},
 	}
 	return fc, nil
@@ -2633,41 +2471,6 @@ func (ec *executionContext) unmarshalInputNewMemo(ctx context.Context, obj inter
 
 // region    **************************** object.gotpl ****************************
 
-var labelImplementors = []string{"Label"}
-
-func (ec *executionContext) _Label(ctx context.Context, sel ast.SelectionSet, obj *model.Label) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, labelImplementors)
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Label")
-		case "id":
-
-			out.Values[i] = ec._Label_id(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "name":
-
-			out.Values[i] = ec._Label_name(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var memoImplementors = []string{"Memo"}
 
 func (ec *executionContext) _Memo(ctx context.Context, sel ast.SelectionSet, obj *model.Memo) graphql.Marshaler {
@@ -2699,10 +2502,6 @@ func (ec *executionContext) _Memo(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "label":
-
-			out.Values[i] = ec._Memo_label(ctx, field, obj)
-
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2772,7 +2571,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "labels":
+		case "memos":
 			field := field
 
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
@@ -2781,7 +2580,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_labels(ctx, field)
+				res = ec._Query_memos(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -3166,7 +2965,11 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) marshalNLabel2ᚕᚖgithubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐLabelᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Label) graphql.Marshaler {
+func (ec *executionContext) marshalNMemo2githubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐMemo(ctx context.Context, sel ast.SelectionSet, v model.Memo) graphql.Marshaler {
+	return ec._Memo(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMemo2ᚕᚖgithubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐMemoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Memo) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3190,7 +2993,7 @@ func (ec *executionContext) marshalNLabel2ᚕᚖgithubᚗcomᚋTomoki108ᚋgoᚑ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNLabel2ᚖgithubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐLabel(ctx, sel, v[i])
+			ret[i] = ec.marshalNMemo2ᚖgithubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐMemo(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3208,20 +3011,6 @@ func (ec *executionContext) marshalNLabel2ᚕᚖgithubᚗcomᚋTomoki108ᚋgoᚑ
 	}
 
 	return ret
-}
-
-func (ec *executionContext) marshalNLabel2ᚖgithubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐLabel(ctx context.Context, sel ast.SelectionSet, v *model.Label) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._Label(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNMemo2githubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐMemo(ctx context.Context, sel ast.SelectionSet, v model.Memo) graphql.Marshaler {
-	return ec._Memo(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNMemo2ᚖgithubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐMemo(ctx context.Context, sel ast.SelectionSet, v *model.Memo) graphql.Marshaler {
@@ -3531,13 +3320,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	}
 	res := graphql.MarshalBoolean(*v)
 	return res
-}
-
-func (ec *executionContext) marshalOLabel2ᚖgithubᚗcomᚋTomoki108ᚋgoᚑgraphqlᚑmemoᚑappᚋgraphᚋmodelᚐLabel(ctx context.Context, sel ast.SelectionSet, v *model.Label) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Label(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

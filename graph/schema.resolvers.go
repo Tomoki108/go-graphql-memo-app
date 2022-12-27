@@ -16,16 +16,15 @@ func (r *mutationResolver) CreateMemo(ctx context.Context, input model.NewMemo) 
 	memo := model.Memo{
 		Title: input.Title,
 		Body:  input.Body,
-		Label: nil,
 	}
 	r.DB.Create(&memo)
 
 	return &memo, nil
 }
 
-// Labels is the resolver for the labels field.
-func (r *queryResolver) Labels(ctx context.Context) ([]*model.Label, error) {
-	panic(fmt.Errorf("not implemented: Labels - labels"))
+// Memos is the resolver for the memos field.
+func (r *queryResolver) Memos(ctx context.Context) ([]*model.Memo, error) {
+	panic(fmt.Errorf("not implemented: Memos - memos"))
 }
 
 // Mutation returns MutationResolver implementation.

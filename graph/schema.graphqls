@@ -6,16 +6,10 @@ type Memo {
   id: ID!
   title: String!
   body: String!
-  label: Label
-}
-
-type Label {
-  id: ID!
-  name: String!
 }
 
 type Query {
-  labels: [Label!]!
+  memos: [Memo!]!
 }
 
 input NewMemo {
